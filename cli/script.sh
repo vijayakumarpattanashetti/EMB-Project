@@ -1,0 +1,5 @@
+set -e 
+CORE_PEER_MSPCONFIGPATH=/peers/patientOrganizations/patient-org/patients/patient0/msp CORE_PEER_LOCALMSPID="PatientMSP" peer channel create -o patient0:7050 -c default -f /peers/patient/channel.tx --tls true --cafile /peers/patient/localMspConfig/cacerts/patientOrg.pem 
+CORE_PEER_MSPCONFIGPATH=/peers/insurancePeer/localMspConfig CORE_PEER_ADDRESS=insurance-peer:7051 CORE_PEER_LOCALMSPID=InsuranceOrgMSP CORE_PEER_TLS_ROOTCERT_FILE=/peers/insurancePeer/localMspConfig/cacerts/insuranceOrg.pem peer channel join -b default.block 
+CORE_PEER_MSPCONFIGPATH=/peers/vendorPeer/localMspConfig CORE_PEER_ADDRESS=vendor-peer:7051 CORE_PEER_LOCALMSPID=VendorOrgMSP CORE_PEER_TLS_ROOTCERT_FILE=/peers/vendorPeer/localMspConfig/cacerts/vendorOrg.pem peer channel join -b default.block 
+CORE_PEER_MSPCONFIGPATH=/peers/hospitalPeer/localMspConfig CORE_PEER_ADDRESS=hospitalservice-peer:7051 CORE_PEER_LOCALMSPID=HospitalOrgMSP CORE_PEER_TLS_ROOTCERT_FILE=/peers/hospialPeer/localMspConfig/cacerts/hospitalOrg.pem peer channel join -b default.block
