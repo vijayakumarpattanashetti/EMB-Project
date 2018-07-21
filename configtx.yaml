@@ -1,0 +1,139 @@
+---
+
+Profiles:
+
+  FourOrgsGenesis:
+
+    Patient:
+
+      <<: *PatientDefaults
+
+      Organizations:
+
+      - *PatientOrg
+
+    Consortiums:
+
+      InsuranceConsortium:
+
+        Organizations:
+
+        - *InsuranceOrg
+
+        - *VendorOrg
+
+        - *HospitalOrg
+
+        - *GovernmentOrg
+
+  FourOrgsChannel:
+
+    Consortium: InsuranceConsortium
+
+    Application:
+
+      <<: *ApplicationDefaults
+
+      Organizations:
+
+      - *InsuranceOrg
+
+      - *VendorOrg
+
+      - *HospitalOrg
+
+      - *GovernmentOrg
+
+
+Organizations:
+
+- &PatientOrg
+
+  Name: PatientOrg
+
+  ID: PatientMSP
+
+  MSPDir: cli/peers/patientOrganizations/patient-org/msp
+
+- &InsuranceOrg
+
+  Name: InsuranceOrgMSP
+
+  ID: InsuranceOrgMSP
+
+  MSPDir: cli/peers/peerOrganizations/insurance-org/msp
+
+  AnchorPeers:
+
+  - Host: insurance-peer
+
+    Port: 7051
+
+- &VendorOrg
+
+  Name: VendorOrgMSP
+
+  ID: VendorOrgMSP
+
+  MSPDir: cli/peers/peerOrganizations/vendor-org/msp
+
+  AnchorPeers:
+
+  - Host: vendor-peer
+
+    Port: 7051
+
+- &HospitalOrg
+
+  Name: HospitalOrgMSP
+
+  ID: HospitalOrgMSP
+
+  MSPDir: cli/peers/peerOrganizations/hospital-org/msp
+
+  AnchorPeers:
+
+  - Host: hospital-peer
+
+    Port: 7051
+
+- &GovernmentOrg
+
+    Name: GovernmentOrgMSP
+
+    ID: GovernmentOrgMSP
+
+    MSPDir: cli/peers/peerOrganizations/government-org/msp
+
+    AnchorPeers:
+
+    - Host: government-peer
+
+      Port: 7051
+
+
+Patient: &PatientDefaults
+
+  PatientType: solo
+
+  Addresses:
+
+  - patient0:7050
+
+  BatchTimeout: 2s
+
+  BatchSize:
+
+    MaxMessageCount: 10
+
+    AbsoluteMaxBytes: 99 MB
+
+    PreferredMaxBytes: 512 KB
+
+  Organizations:
+
+
+Application: &ApplicationDefaults
+
+  Organizations:
+

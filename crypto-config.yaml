@@ -1,0 +1,56 @@
+PatientOrgs:
+
+- Name: PatientOrg
+
+  Domain: patient-org
+
+  CommonName: patient-org
+
+  Specs:
+
+  - Hostname: patient0
+
+    CommonName: "{{.Hostname}}"
+
+PeerOrgs:
+
+- Name: InsuranceOrg
+
+  Domain: insurance-org
+
+  Specs:
+
+  - Hostname: insurance-peer
+
+    CommonName: "{{.Hostname}}"
+
+- Name: VendorOrg
+
+  Domain: vendor-org
+
+  Specs:
+
+  - Hostname: vendor-peer
+
+    CommonName: "{{.Hostname}}"
+
+- Name: HospitalOrg
+
+  Domain: hospital-org
+
+  Specs:
+
+  - Hostname: hospital-peer
+
+    CommonName: "{{.Hostname}}"
+
+- Name: GovernmentOrg
+
+  Domain: government-org
+
+  Specs:
+
+  - Hostname: government-peer
+
+    CommonName: "{{.Hostname}}"
+
