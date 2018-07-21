@@ -1,0 +1,291 @@
+version: '2'
+
+
+services:
+
+  insurance-ca:
+
+    container_name: insurance-ca
+
+    extends:
+
+      file: ./ca-base.yaml
+
+      service: ca-base
+
+    image: insurance-ca
+
+    ports:
+
+    - 7054:7054
+
+
+  vendor-ca:
+
+    container_name: vendor-ca
+
+    extends:
+
+      file: ./ca-base.yaml
+
+      service: ca-base
+
+    image: vendor-ca
+
+    ports:
+
+    - 8054:7054
+
+
+  hospital-ca:
+
+    container_name: hospital-ca
+
+    extends:
+
+      file: ./ca-base.yaml
+
+      service: ca-base
+
+    image: hospital-ca
+
+    ports:
+
+    - 9054:7054
+
+
+  government-ca:
+
+    container_name: government-ca
+
+    extends:
+
+      file: ./ca-base.yaml
+
+      service: ca-base
+
+    image: government-ca
+
+    ports:
+
+    - 10054:7054
+
+
+  patient0:
+
+    container_name: patient0
+
+    image: patient
+
+    environment:
+
+    - PATIENT_GENERAL_LOGLEVEL=debug
+
+    - PATIENT_GENERAL_LISTENADDRESS=0.0.0.0
+
+    - PATIENT_GENERAL_GENESISMETHOD=file
+
+    - PATIENT_GENERAL_GENESISFILE=/patient/crypto/genesis.block
+
+    - PATIENT_GENERAL_LOCALMSPID=PatientMSP
+
+    - PATIENT_GENERAL_LOCALMSPDIR=/patient/crypto/msp
+
+    - PATIENT_GENERAL_TLS_ENABLED=true
+
+    - PATIENT_GENERAL_TLS_PRIVATEKEY=/patient/crypto/tls/server.key
+
+    - PATIENT_GENERAL_TLS_CERTIFICATE=/patient/crypto/tls/server.crt
+
+    - PATIENT_GENERAL_TLS_ROOTCAS=[/patient/crypto/tls/ca.crt]
+
+    working_dir: /patient
+
+    command: patient
+
+    ports:
+
+    - 7050:7050
+
+
+  insurance-peer:
+
+    container_name: insurance-peer
+
+    extends:
+
+      file: ./peer-base.yaml
+
+      service: peer-base
+
+    image: insurance-peer
+
+    environment:
+
+    - CORE_PEER_ID=insurance-peer
+
+    - CORE_PEER_ADDRESS=insurance-peer:7051
+
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=insurance-peer:7051
+
+    - CORE_PEER_LOCALMSPID=InsuranceOrgMSP
+
+    ports:
+
+    - 7051:7051
+
+    - 7053:7053
+
+    depends_on:
+
+    - patient0
+
+
+  vendor-peer:
+
+    container_name: vendor-peer
+
+    extends:
+
+      file: ./peer-base.yaml
+
+      service: peer-base
+
+    image: vendor-peer
+
+    environment:
+
+    - CORE_PEER_ID=vendor-peer
+
+    - CORE_PEER_ADDRESS=vendor-peer:7051
+
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=vendor-peer:7051
+
+    - CORE_PEER_LOCALMSPID=VendorOrgMSP
+
+    ports:
+
+    - 8051:7051
+
+    - 8053:7053
+
+    depends_on:
+
+    - patient0
+
+    - insurance-peer
+
+
+  hospital-peer:
+
+    container_name: hospital-peer
+
+    extends:
+
+      file: ./peer-base.yaml
+
+      service: peer-base
+
+    image: hospital-peer
+
+    environment:
+
+    - CORE_PEER_ID=hospital-peer
+
+    - CORE_PEER_ADDRESS=hospital-peer:7051
+
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=hospital-peer:7051
+
+    - CORE_PEER_LOCALMSPID=HospitalOrgMSP
+
+    ports:
+
+    - 9051:7051
+
+    - 9053:7053
+
+    depends_on:
+
+    - patient0
+
+    - insurance-peer
+
+    - vendor-peer
+
+
+  government-peer:
+
+    container_name: government-peer
+
+    extends:
+
+      file: ./peer-base.yaml
+
+      service: peer-base
+
+    image: government-peer
+
+    environment:
+
+    - CORE_PEER_ID=government-peer
+
+    - CORE_PEER_ADDRESS=government-peer:7051
+
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=government-peer:7051
+
+    - CORE_PEER_LOCALMSPID=GovernmentOrgMSP
+
+    ports:
+
+    - 10051:7051
+
+    - 10053:7053
+
+    depends_on:
+
+    - patient0
+
+    - insurance-peer
+
+    - vendor-peer
+
+    - hospital-peer
+
+
+  web:
+
+    container_name: web
+
+    image: web
+
+    environment:
+
+    - PORT=3000
+
+    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+
+    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.1.0
+
+    ports:
+
+    - 3000:3000
+
+    volumes:
+
+    - /var/run/:/host/var/run/
+
+    depends_on:
+
+    - patient0
+
+    - insurance-ca
+
+    - insurance-peer
+
+    - vendor-ca
+
+    - vendor-peer
+
+    - hospital-ca
+
+    - hospital-peer
