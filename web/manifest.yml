@@ -1,0 +1,11 @@
+---
+
+applications:
+- name: Electronic Medical Bureau
+  path: .
+  command: npm run serve
+  memory: 512M
+  buildpack: sdk-for-nodejs
+  hostname: emb
+  env:
+    NODE_ENV: production
