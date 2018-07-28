@@ -1,3 +1,5 @@
+#!/bin/bash
+
 docker rm -f $(docker ps -aq)
 
 images=( web insurance-peer patient government-peer hospital-ca vendor-ca government-ca insurance-ca hospital-peer vendor-peer )
