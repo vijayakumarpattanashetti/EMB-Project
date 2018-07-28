@@ -1,3 +1,5 @@
+#!/bin/sh
+
 CHANNEL_NAME="default"
 
 PROJPATH=$(pwd)
